@@ -20,7 +20,7 @@ rl.question("Nama: ", (name) => {
                     mobile,
                     email
                 } ];
-                fs.writeFileSync("text.txt", JSON.stringify(result));
+                fs.writeFileSync("text.txt", JSON.stringify(result, null, 2));
                 console.log("Data mu tersimpan di file");
             } else {
                 if (!validEmail) {
