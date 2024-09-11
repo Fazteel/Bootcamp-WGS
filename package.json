@@ -1,0 +1,17 @@
+{
+  "name": "bootcamp-wgs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app",
+    "fol": "ls",
+    "push": "git add . && git commit -m 'Update' && git push",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Fahmi Andika S",
+  "license": "ISC",
+  "dependencies": {
+    "validator": "^13.12.0"
+  }
+}
