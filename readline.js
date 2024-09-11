@@ -11,8 +11,8 @@ const rl = readline.createInterface({ input, output });
 rl.question("Nama: ", (name) => {
     rl.question("No Hp: ", (mobile) => {
         rl.question("Email: ", (email) => {
-            const validMobile = validator.isMobilePhone(mobile);
             const validEmail = validator.isEmail(email);
+            const validMobile = validator.isMobilePhone(mobile);
 
             if (validMobile && validEmail) {
                 const result = [ {
