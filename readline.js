@@ -39,9 +39,8 @@ function saveData(result){
         fs.writeFileSync("data/contacts.json", JSON.stringify(contact, null, 2));
         console.log("Data mu tersimpan di file");
     } catch (error) {
-        console.log("Terjadi kesalahan", error.message);
-        
-    }
+        console.log("Terjadi kesalahan", error.message);    
+    };
 };
 
 rl.question("Nama: ", (name) => {
