@@ -12,6 +12,7 @@
   "author": "Fahmi Andika S",
   "license": "ISC",
   "dependencies": {
-    "validator": "^13.12.0"
+    "validator": "^13.12.0",
+    "yargs": "^17.7.2"
   }
 }

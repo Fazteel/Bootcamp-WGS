@@ -18,7 +18,7 @@ const addData = (name, mobile, email) => {
             name,
             mobile,
             email
-        };
+        } ;
     } else {
         if (!validEmail) {
             console.log("Email anda salah");
