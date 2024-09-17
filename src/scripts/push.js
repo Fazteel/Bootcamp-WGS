@@ -11,6 +11,6 @@ const commitMessage = readlineSync.question("Masukkan pesan commit: ");
 execSync(`git commit -m "${commitMessage}"`, { stdio: "inherit" });
 
 // Melakukan push ke branch master
-execSync("git push -u origin master", { stdio: "inherit" });
+execSync("git push -u origin main", { stdio: "inherit" });
 
 console.log("Perubahan berhasil di-push ke branch master.");
