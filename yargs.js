@@ -87,7 +87,12 @@ const editData = (oldName, newName, newMobile, newEmail) => {
             return;
         }
 
-        const contactToUpdate = contacts[index];
+        const contactToUpdate = contacts[ index ];
+        
+        if (!newName && !newMobile && !newEmail) {
+            console.log("Mohon isi data untuk memperbarui contact");
+            return;
+        }
 
         if (newEmail && !validator.isEmail(newEmail)) {
             console.log("Email anda salah");
@@ -98,9 +103,15 @@ const editData = (oldName, newName, newMobile, newEmail) => {
             return;
         }
 
-        if (newName) contactToUpdate.name = newName;
-        if (newMobile) contactToUpdate.mobile = newMobile;
-        if (newEmail) contactToUpdate.email = newEmail;
+        if (newName) {
+            contactToUpdate.name = newName;
+        }
+        if (newMobile) {
+            contactToUpdate.mobile = newMobile;
+        }
+        if (newEmail) {
+            contactToUpdate.email = newEmail;
+        }
 
         fs.writeFileSync("data/contacts.json", JSON.stringify(contacts, null, 2));
         console.log(`Data contact ${oldName} berhasil diperbarui`);
@@ -108,8 +119,6 @@ const editData = (oldName, newName, newMobile, newEmail) => {
         console.log("Data gagal disimpan", error.message);
     }
 }
-
-
 
 const deleteData = (name) => {
     try {
@@ -189,7 +198,7 @@ yargs.command({
     command: 'edit',
     describe: 'Mengubah data pada contact',
     builder: {
-        name: {
+        oldName: {
             describe: 'Contact name',
             demandOption: 'true',
             type: 'string',
@@ -208,7 +217,7 @@ yargs.command({
         },
     },
     handler(argv) {
-        editData(argv.name, argv.newName, argv.newMobile, argv.newEmail);
+        editData(argv.oldName, argv.newName, argv.newMobile, argv.newEmail);
     }
 });
 
