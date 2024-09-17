@@ -6,12 +6,13 @@
   "scripts": {
     "start": "node app",
     "fol": "ls",
-    "push": "git add . && git commit -m 'Update' && git push",
+    "push": "node src/scripts/push.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Fahmi Andika S",
   "license": "ISC",
   "dependencies": {
+    "readline-sync": "^1.4.10",
     "validator": "^13.12.0",
     "yargs": "^17.7.2"
   }

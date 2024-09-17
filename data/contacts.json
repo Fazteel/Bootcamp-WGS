@@ -1,6 +1,6 @@
 [
   {
-    "name": "Fahmi Andika",
+    "name": "Fahmi",
     "mobile": "081234567",
     "email": "fahmi@gmail.com"
   },
@@ -25,19 +25,9 @@
     "mobile": "0876543"
   },
   {
-    "name": "Rina",
-    "email": "rina@gmail.com",
-    "mobile": "0812345"
-  },
-  {
     "name": "Asep",
     "email": "asep@gmail.com",
     "mobile": "0854321"
-  },
-  {
-    "name": "Dewi",
-    "email": "dewi@gmail.com",
-    "mobile": "0821674"
   },
   {
     "name": "Budi",
@@ -50,23 +40,8 @@
     "mobile": "0819876"
   },
   {
-    "name": "Ali",
-    "email": "ali@gmail.com",
-    "mobile": "0851234"
-  },
-  {
-    "name": "Nina",
-    "email": "nina@gmail.com",
-    "mobile": "0878765"
-  },
-  {
     "name": "Tono",
     "email": "tono@gmail.com",
     "mobile": "0865432"
-  },
-  {
-    "name": "Maya",
-    "email": "maya@gmail.com",
-    "mobile": "0847654"
   }
 ]
