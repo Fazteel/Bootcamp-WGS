@@ -79,35 +79,36 @@ const detailData = (name) => {
 const editData = (oldName, newName, newMobile, newEmail) => {
     try {
         const file = fs.readFileSync("data/contacts.json", "utf-8");
-        const contact = JSON.parse(file);
-        const validEmail = newEmail ? validator.isEmail(newEmail) : true;
-        const validMobile = newMobile ? validator.isMobilePhone(newMobile) : true;
+        const contacts = file ? JSON.parse(file) : [];
 
-        const index = contact.findIndex(contact => contact.name.toLowerCase() === oldName.toLowerCase());
+        const index = contacts.findIndex(contact => contact.name.toLowerCase() === oldName.toLowerCase());
         if (index === -1) {
             console.log(`Contact dengan nama ${oldName} tidak ditemukan`);
             return;
         }
 
-        if (!validEmail) {
+        const contactToUpdate = contacts[index];
+
+        if (newEmail && !validator.isEmail(newEmail)) {
             console.log("Email anda salah");
             return;
         }
-        if (!validMobile) {
+        if (newMobile && !validator.isMobilePhone(newMobile)) {
             console.log("No Telepon anda salah");
             return;
         }
 
-        if (newName) contact[ index ].name = newName;
-        if (newMobile) contact[ index ].mobile = newMobile;
-        if (newEmail) contact[ index ].email = newEmail;
+        if (newName) contactToUpdate.name = newName;
+        if (newMobile) contactToUpdate.mobile = newMobile;
+        if (newEmail) contactToUpdate.email = newEmail;
 
-        fs.writeFileSync("data/contacts.json", JSON.stringify(contact, null, 2));
+        fs.writeFileSync("data/contacts.json", JSON.stringify(contacts, null, 2));
         console.log(`Data contact ${oldName} berhasil diperbarui`);
     } catch (error) {
-        console.log("Data gagal disimpan", error.message);   
+        console.log("Data gagal disimpan", error.message);
     }
 }
+
 
 
 const deleteData = (name) => {
