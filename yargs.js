@@ -1,179 +1,131 @@
 const yargs = require("yargs");
 const fs = require("fs");
 const validator = require("validator");
-const { type } = require("os");
 
-const addData = (name, email, mobile) => {
-    const validEmail = validator.isEmail(email);
-    const validMobile = validator.isMobilePhone(mobile);
-
-    if (validMobile && validEmail) {
-        return {
-            name,
-            email,
-            mobile
-        } ;
-    } else {
-        if (!validEmail) {
-            console.log("Email anda salah");
-        }
-        if (!validMobile) {
-            console.log("No Telepon anda salah");
-        }
-        return null;
+const readContacts = () => {
+    try {
+        const file = fs.readFileSync("data/contacts.json", "utf-8");
+        return JSON.parse(file);
+    } catch (error) {
+        console.log("Gagal membaca file kontak:", error.message);
+        return [];
     }
 };
 
-const saveData = (result) => {
+const writeContacts = (contacts) => {
     try {
-        const file = fs.readFileSync("data/contacts.json", "utf-8");
-        const contact = JSON.parse(file);
-
-        const duplicate = contact.find(contact => contact.name === result.name);
-        if (duplicate) {
-            console.log(`Nama ${result.name} sudah ada`);
-            return;
-        }
-        contact.push(result);
-
-        fs.writeFileSync("data/contacts.json", JSON.stringify(contact, null, 2));
-        console.log("Data mu tersimpan di file");
+        fs.writeFileSync("data/contacts.json", JSON.stringify(contacts, null, 2));
+        console.log("Data berhasil disimpan");
     } catch (error) {
-        console.log("Data gagal disimpan", error.message);   
+        console.log("Gagal menyimpan data:", error.message);
     }
-}
+};
+
+const addData = (name, email, mobile) => {
+    if (!validator.isEmail(email)) {
+        console.log("Email anda salah");
+        return null;
+    }
+    if (!validator.isMobilePhone(mobile, 'id-ID')) {
+        console.log("No Telepon anda salah");
+        return null;
+    }
+
+    const contacts = readContacts();
+    if (contacts.some(contact => contact.name === name)) {
+        console.log(`Nama ${name} sudah ada`);
+        return null;
+    }
+
+    const newContact = { name, email, mobile };
+    contacts.push(newContact);
+    writeContacts(contacts);
+};
 
 const listData = () => {
-    try {
-        const file = fs.readFileSync("data/contacts.json", "utf-8");
-        const contact = JSON.parse(file);
-
-        console.log("List data contact");
-        contact.forEach((contact, index) => {
-            console.log(`${index + 1}. ${contact.name} - ${contact.mobile} - ${contact.email}`);
-        })
-    } catch (error) {
-        console.log("Data tidak ditemukan", error.message);
-    }
-}
+    const contacts = readContacts();
+    console.log("List data contact:");
+    contacts.forEach((contact, index) => {
+        console.log(`${index + 1}. ${contact.name} - ${contact.mobile} - ${contact.email}`);
+    });
+};
 
 const detailData = (name) => {
-    try {
-        const file = fs.readFileSync("data/contacts.json", "utf-8");
-        const contact = JSON.parse(file);
-
-        const result = contact.filter(contact => contact.name.toLowerCase() === name.toLowerCase());
-        if (result.length > 0) {
-            console.log("Detail contact ditemukan");
-            console.log(`Nama : ${result[0].name}`);
-            console.log(`Mobile : ${result[0].mobile}`);
-            console.log(`Email : ${result[0].email}`);
-        } else {
-            console.log(`Contact dengan nama ${name} tidak ditemukan`);
-        }
-    } catch (error) {
-        console.log("Data tidak ditemukan", error.message);
+    const contacts = readContacts();
+    const contact = contacts.find(c => c.name.toLowerCase() === name.toLowerCase());
+    
+    if (contact) {
+        console.log("Detail contact ditemukan:");
+        console.log(`Nama : ${contact.name}`);
+        console.log(`Mobile : ${contact.mobile}`);
+        console.log(`Email : ${contact.email}`);
+    } else {
+        console.log(`Contact dengan nama ${name} tidak ditemukan`);
     }
-}
+};
 
 const editData = (oldName, newName, newMobile, newEmail) => {
-    try {
-        const file = fs.readFileSync("data/contacts.json", "utf-8");
-        const contacts = file ? JSON.parse(file) : [];
+    const contacts = readContacts();
+    const index = contacts.findIndex(contact => contact.name.toLowerCase() === oldName.toLowerCase());
 
-        const index = contacts.findIndex(contact => contact.name.toLowerCase() === oldName.toLowerCase());
-        if (index === -1) {
-            console.log(`Contact dengan nama ${oldName} tidak ditemukan`);
-            return;
-        }
-
-        const contactToUpdate = contacts[ index ];
-        
-        if (!newName && !newMobile && !newEmail) {
-            console.log("Mohon isi data untuk memperbarui contact");
-            return;
-        }
-
-        if (newEmail && !validator.isEmail(newEmail)) {
-            console.log("Email anda salah");
-            return;
-        }
-        if (newMobile && !validator.isMobilePhone(newMobile)) {
-            console.log("No Telepon anda salah");
-            return;
-        }
-
-        if (newName) {
-            contactToUpdate.name = newName;
-        }
-        if (newMobile) {
-            contactToUpdate.mobile = newMobile;
-        }
-        if (newEmail) {
-            contactToUpdate.email = newEmail;
-        }
-
-        fs.writeFileSync("data/contacts.json", JSON.stringify(contacts, null, 2));
-        console.log(`Data contact ${oldName} berhasil diperbarui`);
-    } catch (error) {
-        console.log("Data gagal disimpan", error.message);
+    if (index === -1) {
+        console.log(`Contact dengan nama ${oldName} tidak ditemukan`);
+        return;
     }
-}
+
+    if (newEmail && !validator.isEmail(newEmail)) {
+        console.log("Email anda salah");
+        return;
+    }
+    if (newMobile && !validator.isMobilePhone(newMobile, 'id-ID')) {
+        console.log("No Telepon anda salah");
+        return;
+    }
+
+    if (newName) {
+        contacts[ index ].name = newName;
+    }
+    if (newMobile) {
+        contacts[ index ].mobile = newMobile;
+    }
+    if (newEmail) {
+        contacts[ index ].email = newEmail;
+    }
+
+    writeContacts(contacts);
+    console.log(`Data contact ${oldName} berhasil diperbarui`);
+};
 
 const deleteData = (name) => {
-    try {
-        const file = fs.readFileSync("data/contacts.json", "utf-8");
-        let contact = JSON.parse(file);
+    const contacts = readContacts();
+    const filteredContacts = contacts.filter(contact => contact.name.toLowerCase() !== name.toLowerCase());
 
-        const update = contact.find(contact => contact.name.toLowerCase() === name.toLowerCase());
-        if (!update) {
-            console.log(`Data ${name} tidak ditemukan`);
-            return;
-        }
-
-        const updateData = contact.filter(contact => contact.name.toLowerCase() !== name.toLowerCase());
-        fs.writeFileSync("data/contacts.json", JSON.stringify(updateData, null, 2));
-        console.log(`Data contact ${name} berhasil dihapus`);
-    } catch (error) {
-        console.log("Data gagal dihapus", error.message);
+    if (filteredContacts.length === contacts.length) {
+        console.log(`Data ${name} tidak ditemukan`);
+        return;
     }
-}
 
+    writeContacts(filteredContacts);
+    console.log(`Data contact ${name} berhasil dihapus`);
+};
+
+// Yargs commands
 yargs.command({
     command: 'add',
+    describe: 'Menambah kontak baru',
     builder: {
-        name: {
-            describe: 'Contact name',
-            demandOption: 'true',
-            type: 'string',
-        },
-        email: {
-            describe: 'Contact email',
-            demandOption: 'false',
-            type: 'string',
-        },
-        mobile: {
-            describe: 'Contact mobile phone number',
-            demandOption: 'true',
-            type: 'string',
-        },
+        name: { describe: 'Nama kontak', demandOption: true, type: 'string' },
+        email: { describe: 'Email kontak', demandOption: true, type: 'string' },
+        mobile: { describe: 'Nomor telepon kontak', demandOption: true, type: 'string' },
     },
     handler(argv) {
-        const contact = addData(
-            argv.name,
-            argv.email,
-            argv.mobile,
-        );
-
-        if (contact) {
-            saveData(contact);
-        }
+        addData(argv.name, argv.email, argv.mobile);
     }
 });
 
 yargs.command({
     command: 'list',
-    describe: 'Menampilkan data pada list contact',
+    describe: 'Menampilkan semua kontak',
     handler() {
         listData();
     }
@@ -181,13 +133,9 @@ yargs.command({
 
 yargs.command({
     command: 'detail',
-    describe: 'Menampilkan detail data pada contact',
+    describe: 'Menampilkan detail kontak',
     builder: {
-        name: {
-            describe: 'Contact name',
-            demandOption: 'true',
-            type: 'string',
-        },
+        name: { describe: 'Nama kontak', demandOption: true, type: 'string' },
     },
     handler(argv) {
         detailData(argv.name);
@@ -196,25 +144,12 @@ yargs.command({
 
 yargs.command({
     command: 'edit',
-    describe: 'Mengubah data pada contact',
+    describe: 'Mengubah kontak',
     builder: {
-        oldName: {
-            describe: 'Contact name',
-            demandOption: 'true',
-            type: 'string',
-        },
-        newName: {
-            describe: 'New Name',
-            type: 'string',
-        },
-        newMobile: {
-            describe: 'New Mobile',
-            type: 'string',
-        },
-        newEmail: {
-            describe: 'New Email',
-            type: 'string',
-        },
+        oldName: { describe: 'Nama kontak lama', demandOption: true, type: 'string' },
+        newName: { describe: 'Nama kontak baru', type: 'string' },
+        newMobile: { describe: 'Nomor telepon baru', type: 'string' },
+        newEmail: { describe: 'Email baru', type: 'string' },
     },
     handler(argv) {
         editData(argv.oldName, argv.newName, argv.newMobile, argv.newEmail);
@@ -223,17 +158,13 @@ yargs.command({
 
 yargs.command({
     command: 'delete',
-    describe: 'Menghapus data contact',
+    describe: 'Menghapus kontak',
     builder: {
-        name: {
-            describe: 'Nama contact yang ingin dihapus',
-            demandOption: 'true',
-            type: 'string'
-        },
+        name: { describe: 'Nama kontak', demandOption: true, type: 'string' },
     },
     handler(argv) {
-        deleteData(argv.name)
+        deleteData(argv.name);
     }
 });
 
-yargs.parse()
+yargs.parse();
