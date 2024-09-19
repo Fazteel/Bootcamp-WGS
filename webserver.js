@@ -11,7 +11,7 @@ const renderHTML = (filePath, res) => {
             res.write(data);
             res.end();
         }
-      });
+    });
 }
 
 http.createServer((req, res) => {
