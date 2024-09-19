@@ -21,11 +21,11 @@ http.createServer((req, res) => {
     });
 
     if (url === "/about") {
-        renderHTML("./page/about.html", res);
+        renderHTML("./src/page/about.html", res);
     } else if (url === "/contact") {
-        renderHTML("./page/contact.html", res);
+        renderHTML("./src/page/contact.html", res);
     } else {
-        renderHTML("./page/index.html", res);
+        renderHTML("./src/page/index.html", res);
     }
 
   }).listen(3000, () => {
