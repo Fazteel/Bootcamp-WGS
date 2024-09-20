@@ -1,6 +1,5 @@
 const express = require("express");
 const fs = require("fs");
-const path = require("path");
 const { title } = require("process");
 const app = express();
 const port = 3000;
