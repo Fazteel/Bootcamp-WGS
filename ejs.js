@@ -19,35 +19,14 @@ app.get('/about', (req, res) => {
 
 app.get('/contact', (req, res) => {
     // res.sendFile("./src/page/contact.html", {root: __dirname});
-    const contacts = path.join(__dirname, 'data/contacts.json');
-
-    fs.readFile(contacts, 'utf-8', (err, data) => {
-        if (err) {
-            console.error('Error reading contacts.json:', err);
-            return res.status(500).send('Internal Server Error');
-        }
-
-        const contacts = JSON.parse(data);
-
+    try {
+        const file = fs.readFileSync("data/contacts.json", "utf-8");
+        const contacts = JSON.parse(file);
         res.render('contact', {contact: contacts, title:"Contact"});
-    });
-    //     {
-    //         name: "Fahmi",
-    //         email: "fahmi@gmail.com",
-    //     },
-    //     {
-    //         name: "Iqbal",
-    //         email: "iqbal@gmail.com",
-    //     },
-    //     {
-    //         name: "Seno",
-    //         email: "seno@gmail.com",
-    //     },
-    //     {
-    //         name: "Bintang",
-    //         email: "bintang@gmail.com",
-    //     },
-    // ];
+    } catch (error) {
+        console.log("Gagal membaca file kontak:", error.message);
+        return [];
+    }
 });
 
 app.get('/product/:prodID/', (req, res) => {
