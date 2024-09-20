@@ -1,52 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 text-gray-800 flex flex-col items-center justify-center min-h-screen">
-    <!-- Title Section -->
-    <div class="mt-5 text-center animate-fadeIn">
-        <h1 class="text-3xl text-gray-800 uppercase tracking-wider transition-colors duration-300 hover:text-yellow-500">
-            Fahmi Andika
-        </h1>
-        <p class="text-lg text-gray-600 mt-2">Welcome to my web page</p>
-    </div>
+<%- include('layout/header') %>
+<%- include('layout/nav') %>
+<!-- Title Section -->
+<div class="mt-20 text-center animate-fadeIn">
+    <h1 class="text-3xl text-gray-800 uppercase tracking-wider transition-colors duration-300 hover:text-yellow-500">
+        <%= nama %>
+    </h1>
+    <p class="text-lg text-gray-600 mt-2">Welcome to my web page</p>
+</div>
 
-    <!-- Navigation -->
-    <nav class="bg-gray-800 w-full text-center py-4 fixed top-0 z-50">
-        <a href="/" class="text-white mx-4 text-lg transition-colors duration-300 hover:text-yellow-500 hover:bg-white/10 px-3 py-2 rounded">
-            Home
-        </a>
-        <a href="/about" class="text-white mx-4 text-lg transition-colors duration-300 hover:text-yellow-500 hover:bg-white/10 px-3 py-2 rounded">
-            About
-        </a>
-        <a href="/contact" class="text-white mx-4 text-lg transition-colors duration-300 hover:text-yellow-500 hover:bg-white/10 px-3 py-2 rounded">
-            Contact
-        </a>
-    </nav>
+<!-- Main Content -->
+<div class="flex flex-col items-center mt-20">
+    <h1 class="text-2xl text-gray-700 mb-4">Ini Halaman Home</h1>
+    <p class="text-lg text-gray-500 text-center px-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vitae augue nec odio gravida consectetur.</p>
+</div>
 
-    <!-- Main Content -->
-    <div class="flex flex-col items-center mt-20">
-        <h1 class="text-2xl text-gray-700 mb-4">Ini Halaman Home</h1>
-        <p class="text-lg text-gray-500 text-center px-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vitae augue nec odio gravida consectetur.</p>
-    </div>
-
-    <!-- Tailwind Animation -->
-    <style>
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+<!-- Tailwind Animation -->
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
         }
-        .animate-fadeIn {
-            animation: fadeIn 1s ease-in-out;
+        to {
+            opacity: 1;
         }
-    </style>
-</body>
-</html>
+    }
+    .animate-fadeIn {
+        animation: fadeIn 1s ease-in-out;
+    }
+</style>
+
+<%- include('layout/footer') %>
