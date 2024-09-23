@@ -2,9 +2,20 @@ const express = require("express");
 const fs = require("fs");
 const { title } = require("process");
 const app = express();
+const expressLayouts = require("express-ejs-layouts");
 const port = 3000;
 
+// Set view engine menjadi EJS
 app.set('view engine', 'ejs');
+
+// Gunakan express-ejs-layouts
+app.use(expressLayouts);
+
+// Set layout utama default
+app.set('layout', 'layouts/main');
+
+// Static Files
+app.use(express.static('public'));
 
 app.get('/', (req, res) => {
     // res.sendFile("./src/page/index.html", {root: __dirname});
