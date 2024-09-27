@@ -16,61 +16,89 @@
     <!-- Ini adalah bagian dinamis yang akan diisi oleh konten halaman -->
     <%- body %> <%- include('../partials/footer') %>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
-  </body>
+    <script>
+      // Hide modals when the corresponding button is clicked
+      document.querySelectorAll("[data-modal-hide]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const modalId = button.getAttribute("data-modal-hide");
+          const modal = document.getElementById(modalId);
+          if (modal) {
+            modal.style.display = "none";
+          }
+        });
+      });
 
-  <script>
-    // Hide modals when the corresponding button is clicked
-    document.querySelectorAll("[data-modal-hide]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const modalId = button.getAttribute("data-modal-hide");
-        const modal = document.getElementById(modalId);
-        if (modal) {
-          modal.style.display = "none";
+      document.getElementById('search-dropdown').addEventListener('input', function() {
+          const query = this.value;
+          fetch(`/contact/search?query=${query}`)
+              .then(response => response.json())
+              .then(data => {
+                  const tbody = document.getElementById('contactTableBody');
+                  tbody.innerHTML = '';
+                  if (data.length > 0) {
+                      data.forEach(contact => {
+                          const row = document.createElement('tr');
+                          row.className = 'bg-white border-b dark:bg-gray-800 dark:border-gray-700';
+                          row.innerHTML = `
+                              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white border-b border-gray-300 dark:border-gray-600">
+                                  ${contact.name}
+                              </th>
+                              <td class="px-6 py-4 border-b border-gray-300 dark:border-gray-600">
+                                  ${contact.email}
+                              </td>
+                              <td class="px-6 py-4 border-b border-gray-300 dark:border-gray-600">
+                                  ${contact.mobile}
+                              </td>
+                              <td class="flex gap-4 px-6 py-4 border-b border-gray-300 dark:border-gray-600">
+                                  <button data-modal-target="contact-modal-${contact.name}" data-modal-toggle="contact-modal-${contact.name}" class="px-4 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                                      Detail
+                                  </button>
+                                  <button data-modal-target="update-modal-${contact.name}" data-modal-toggle="update-modal-${contact.name}" class="px-4 py-2 text-xs font-medium text-center text-white bg-yellow-700 rounded-lg hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800" type="button">
+                                      Update
+                                  </button>
+                                  <button data-modal-target="popup-modal-${contact.name}" data-modal-toggle="popup-modal-${contact.name}" class="px-4 py-2 text-xs font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
+                                      Delete
+                                  </button>
+                              </td>
+                          `;
+                          tbody.appendChild(row);
+                      });
+                  } else {
+                      tbody.innerHTML = '<tr><td colspan="4" class="text-center">Tidak ada kontak yang ditemukan</td></tr>';
+                  }
+              })
+              .catch(error => console.error('Error:', error));
+      });
+
+      function updateTime() {
+        const now = new Date();
+        const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+        const dayName = dayNames[now.getDay()];
+        const monthName = monthNames[now.getMonth()];
+        const day = now.getDate();
+        const year = now.getFullYear();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+
+        const dateString = `${dayName}, ${day} ${monthName} ${year}`;
+        const timeString = `${hours}:${minutes}:${seconds}`;
+
+        document.getElementById('date').innerText = dateString;
+        document.getElementById('time').innerText = timeString;
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const timeContainer = document.getElementById('time-container');
+        if (timeContainer) {
+          setInterval(updateTime, 1000);
+          updateTime(); 
         }
       });
-    });
 
-    document.getElementById('search-dropdown').addEventListener('input', function() {
-        const query = this.value;
-        fetch(`/contact/search?query=${query}`)
-            .then(response => response.json())
-            .then(data => {
-                const tbody = document.getElementById('contactTableBody');
-                tbody.innerHTML = '';
-                if (data.length > 0) {
-                    data.forEach(contact => {
-                        const row = document.createElement('tr');
-                        row.className = 'bg-white border-b dark:bg-gray-800 dark:border-gray-700';
-                        row.innerHTML = `
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white border-b border-gray-300 dark:border-gray-600">
-                                ${contact.name}
-                            </th>
-                            <td class="px-6 py-4 border-b border-gray-300 dark:border-gray-600">
-                                ${contact.email}
-                            </td>
-                            <td class="px-6 py-4 border-b border-gray-300 dark:border-gray-600">
-                                ${contact.mobile}
-                            </td>
-                            <td class="flex gap-4 px-6 py-4 border-b border-gray-300 dark:border-gray-600">
-                                <button data-modal-target="contact-modal-${contact.name}" data-modal-toggle="contact-modal-${contact.name}" class="px-4 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                                    Detail
-                                </button>
-                                <button data-modal-target="update-modal-${contact.name}" data-modal-toggle="update-modal-${contact.name}" class="px-4 py-2 text-xs font-medium text-center text-white bg-yellow-700 rounded-lg hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800" type="button">
-                                    Update
-                                </button>
-                                <button data-modal-target="popup-modal-${contact.name}" data-modal-toggle="popup-modal-${contact.name}" class="px-4 py-2 text-xs font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
-                                    Delete
-                                </button>
-                            </td>
-                        `;
-                        tbody.appendChild(row);
-                    });
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Tidak ada kontak yang ditemukan</td></tr>';
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    });
+    </script>
+  </body>
 
-  </script>
 </html>
