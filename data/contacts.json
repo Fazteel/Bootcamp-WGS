@@ -1,42 +1,27 @@
 [
   {
-    "name": "Fahmi",
-    "mobile": "0812345678901",
-    "email": "fahmi@gmail.com"
+    "name": "Fahmi Andika Setiono",
+    "email": "fahmi@gmail.com",
+    "mobile": "0812345678901"
   },
   {
-    "name": "Iqbal",
-    "mobile": "0812345678902",
-    "email": "iqbal@gmail.com"
+    "name": "Iqbal Firmansyah",
+    "email": "iqbal@gmail.com",
+    "mobile": "0812345678902"
   },
   {
-    "name": "Seno",
-    "mobile": "0876543212345",
-    "email": "seno@gmail.com"
+    "name": "Damianus Seno",
+    "email": "seno@gmail.com",
+    "mobile": "0876543212345"
   },
   {
-    "name": "Bintang",
-    "mobile": "0865432178901",
-    "email": "bintang@gmail.com"
+    "name": "Akmal Bintang",
+    "email": "bintang@gmail.com",
+    "mobile": "0885411298123"
   },
   {
-    "name": "Dani",
-    "mobile": "0876543000001",
-    "email": "dani@gmail.com"
-  },
-  {
-    "name": "Asep",
-    "mobile": "0854321123456",
-    "email": "asep@gmail.com"
-  },
-  {
-    "name": "Bagas",
-    "mobile": "0832987456123",
-    "email": "budi@gmail.com"
-  },
-  {
-    "name": "Tono",
-    "mobile": "0865432789012",
-    "email": "tono@gmail.com"
+    "name": "Rayhan Jayamahe",
+    "email": "rayhan@gmail.com",
+    "mobile": "0855612345901"
   }
 ]

@@ -1,18 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %></title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 text-gray-800 flex flex-col items-center justify-center">
-    <%- include('../partials/header') %>
-    <%- include('../partials/nav') %>
-    
-    <!-- Ini adalah bagian dinamis yang akan diisi oleh konten halaman -->
-    <%- body %>
+    <link
+      href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body onload="updateTime()" class="bg-gray-100 text-gray-800 flex flex-col items-center justify-center">
+    <%- include('../partials/header') %> <%- include('../partials/nav') %>
 
-    <%- include('../partials/footer') %>
-</body>
+    <!-- Ini adalah bagian dinamis yang akan diisi oleh konten halaman -->
+    <%- body %> <%- include('../partials/footer') %>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
+  </body>
+
+  <script>
+    // Hide modals when the corresponding button is clicked
+    document.querySelectorAll("[data-modal-hide]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const modalId = button.getAttribute("data-modal-hide");
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.style.display = "none";
+        }
+      });
+    });
+
+    document.getElementById('search-dropdown').addEventListener('input', function() {
+        const query = this.value;
+        fetch(`/contact/search?query=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('contactTableBody');
+                tbody.innerHTML = '';
+                if (data.length > 0) {
+                    data.forEach(contact => {
+                        const row = document.createElement('tr');
+                        row.className = 'bg-white border-b dark:bg-gray-800 dark:border-gray-700';
+                        row.innerHTML = `
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white border-b border-gray-300 dark:border-gray-600">
+                                ${contact.name}
+                            </th>
+                            <td class="px-6 py-4 border-b border-gray-300 dark:border-gray-600">
+                                ${contact.email}
+                            </td>
+                            <td class="px-6 py-4 border-b border-gray-300 dark:border-gray-600">
+                                ${contact.mobile}
+                            </td>
+                            <td class="flex gap-4 px-6 py-4 border-b border-gray-300 dark:border-gray-600">
+                                <button data-modal-target="contact-modal-${contact.name}" data-modal-toggle="contact-modal-${contact.name}" class="px-4 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                                    Detail
+                                </button>
+                                <button data-modal-target="update-modal-${contact.name}" data-modal-toggle="update-modal-${contact.name}" class="px-4 py-2 text-xs font-medium text-center text-white bg-yellow-700 rounded-lg hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800" type="button">
+                                    Update
+                                </button>
+                                <button data-modal-target="popup-modal-${contact.name}" data-modal-toggle="popup-modal-${contact.name}" class="px-4 py-2 text-xs font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
+                                    Delete
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Tidak ada kontak yang ditemukan</td></tr>';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+  </script>
 </html>

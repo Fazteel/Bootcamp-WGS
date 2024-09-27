@@ -1,16 +1,46 @@
-<!-- Title Section -->
-<div class="mt-20 text-center animate-fadeIn">
-    <h1 class="text-3xl text-gray-800 uppercase tracking-wider transition-colors duration-300 hover:text-yellow-500">
-        <%= nama %>
-    </h1>
-    <p class="text-lg text-gray-600 mt-2">Welcome to my web page</p>
+<!-- Main Content -->
+<div id="time-container" class="flex items-center justify-center min-h-screen">
+    <div class="flex flex-col items-center">
+        <h1 class="text-9xl text-gray-700 mb-4" id="time"></h1>
+        <p class="text-3xl text-gray-500 text-center px-5" id="date"></p>
+        <!-- Title Section -->
+        <div class="mt-6 text-center animate-fadeIn">
+            <h1 class="text-2xl text-gray-800 uppercase tracking-wider transition-colors duration-300 hover:text-yellow-500">
+                <%= nama %>
+            </h1>
+        </div>
+    </div>
 </div>
 
-<!-- Main Content -->
-<div class="flex flex-col items-center mt-20">
-    <h1 class="text-2xl text-gray-700 mb-4">Ini Halaman Home</h1>
-    <p class="text-lg text-gray-500 text-center px-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vitae augue nec odio gravida consectetur.</p>
-</div>
+<script>
+    function updateTime() {
+      const now = new Date();
+      const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+      const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+      const dayName = dayNames[now.getDay()];
+      const monthName = monthNames[now.getMonth()];
+      const day = now.getDate();
+      const year = now.getFullYear();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+
+      const dateString = `${dayName}, ${day} ${monthName} ${year}`;
+      const timeString = `${hours}:${minutes}:${seconds}`;
+
+      document.getElementById('date').innerText = dateString;
+      document.getElementById('time').innerText = timeString;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const timeContainer = document.getElementById('time-container');
+      if (timeContainer) {
+        setInterval(updateTime, 1000);
+        updateTime(); 
+      }
+    });
+</script>
 
 <!-- Tailwind Animation -->
 <style>
