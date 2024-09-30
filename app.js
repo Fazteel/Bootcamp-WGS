@@ -62,18 +62,6 @@ async function getContacts() {
     }
 }
 
-// Function untuk menyimpan kontak ke file
-function writeContacts(contacts) {
-    try {
-        fs.writeFileSync("data/contacts.json", JSON.stringify(contacts, null, 2));
-        console.log("Data berhasil disimpan");
-        return true;
-    } catch (error) {
-        console.log("Gagal menyimpan data:", error.message);
-        return false;
-    }
-}
-
 // Route untuk halaman utama
 app.get('/', (req, res) => {
     res.render('index', {nama: "Fahmi Andika Setiono", title: "Home"});
