@@ -54,7 +54,7 @@ app.use('/src', express.static(path.join(__dirname, 'src')));
 // Function untuk membaca file kontak
 async function getContacts() {
     try {
-        const result = await pool.query('SELECT * FROM contacts');
+        const result = await pool.query('SELECT * FROM contacts ORDER BY updated_at DESC');
         return result.rows;
     } catch (error) {
         console.error("Gagal mengambil data dari database:", error.message);
@@ -103,7 +103,7 @@ app.post('/contact/add', async (req, res) => {
         }
 
         await pool.query(
-            `INSERT INTO contacts VALUES ('${name}', '${email}', '${mobile}')`
+            `INSERT INTO contacts (name, email, mobile) VALUES ('${name}', '${email}', '${mobile}')`
         );
 
         req.flash('success_msg', 'Data berhasil disimpan');
@@ -113,12 +113,11 @@ app.post('/contact/add', async (req, res) => {
         req.flash('error_msg', 'Gagal menyimpan data');
         res.redirect('/contact');
     }
-
 });
 
 // Route untuk memperbarui kontak
 app.post('/contact/update', async (req, res) => {
-    const { oldName, newName, email, mobile } = req.body;
+    const { id, name, email, mobile } = req.body;
 
     try {
         if (!validator.isEmail(email)) {
@@ -131,49 +130,50 @@ app.post('/contact/update', async (req, res) => {
             return res.redirect('/contact');
         }
 
-        const contacts = await getContacts();
-        const contactToUpdate = contacts.find(contact => contact.name.toLowerCase() === oldName.toLowerCase());
+        const contacts = await pool.query('SELECT * FROM contacts WHERE id = $1', [id]);
+        const contactToUpdate = contacts.rows[0];
 
         if (!contactToUpdate) {
-            req.flash('error_msg', `Kontak dengan nama ${oldName} tidak ditemukan`);
+            req.flash('error_msg', `Kontak dengan nama ${name} tidak ditemukan`);
             return res.redirect('/contact');
         }
 
         await pool.query(
-            'UPDATE contacts SET name = $1, email = $2, mobile = $3 WHERE name = $4',
-            [newName.trim(), email.trim(), mobile.trim(), oldName.trim()]
+            'UPDATE contacts SET name = $1, email = $2, mobile = $3, updated_at = NOW() WHERE id = $4',
+            [name ? name.trim() : contactToUpdate.name, email ? email.trim() : contactToUpdate.email, mobile ? mobile.trim() : contactToUpdate.mobile, id]
         );
 
-        req.flash('success_msg', `Kontak ${oldName} berhasil diperbarui`);
+        req.flash('success_msg', `Kontak berhasil diperbarui`);
         res.redirect('/contact');
     } catch (error) {
         console.error("Gagal memperbarui kontak:", error.message);
-        req.flash('error_msg', `Gagal memperbarui kontak ${oldName}`);
+        req.flash('error_msg', `Gagal memperbarui kontak`);
         res.status(500).redirect('/contact');
     }
 });
 
+
 // Route untuk menghapus kontak
 app.post('/contact/delete', async (req, res) => {
-    const { name } = req.body;
+    const { id, name } = req.body;
 
     try {
-        if (!name) {
-            req.flash('error_msg', 'Nama kontak tidak boleh kosong');
+        if (!id) {
+            req.flash('error_msg', 'ID kontak tidak boleh kosong');
             return res.status(400).redirect('/contact');
         }
 
-        const contacts = await getContacts();
-        const contactToDelete = contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase());
+        const contacts = await pool.query(`SELECT * FROM contacts WHERE id = ${id}`)
+        const contactToDelete = contacts.rows[0];
 
         if (!contactToDelete) {
             req.flash('error_msg', `Kontak dengan nama ${name} tidak ditemukan`);
-            return res.status(404).json({ message: `Kontak dengan nama ${name} tidak ditemukan` });
+            return res.redirect('/contact');
         }
 
-        await pool.query('DELETE FROM contacts WHERE name = $1', [name.trim()]);
+        await pool.query('DELETE FROM contacts WHERE id = $1', [id]);
 
-        req.flash('success_msg', `Kontak ${name} berhasil dihapus`);
+        req.flash('success_msg', `Kontak berhasil dihapus`);
         return res.redirect('/contact');
     } catch (error) {
         console.error("Gagal menghapus kontak:", error.message);
@@ -197,10 +197,11 @@ app.get('/contact/search', async (req, res) => {
         const searchQuery = `%${query.toLowerCase()}%`;
         const result = await pool.query(
             `SELECT * FROM contacts 
-             WHERE LOWER(name) LIKE $1 
-             OR LOWER(email) LIKE $2 
-             OR mobile LIKE $3`, 
-            [searchQuery, searchQuery, searchQuery]
+             WHERE CAST(id AS TEXT) LIKE $1
+             OR LOWER(name) LIKE $2 
+             OR LOWER(email) LIKE $3 
+             OR mobile LIKE $4`,
+            [searchQuery, searchQuery, searchQuery, searchQuery]
         );
 
         res.json(result.rows);

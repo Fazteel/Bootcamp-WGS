@@ -10,11 +10,13 @@
       rel="stylesheet"
     />
   </head>
-  <body onload="updateTime()" class="bg-gray-100 text-gray-800 flex flex-col items-center justify-center">
+  <body onload="updateTime()">
     <%- include('../partials/header') %> <%- include('../partials/nav') %>
-
-    <!-- Ini adalah bagian dinamis yang akan diisi oleh konten halaman -->
-    <%- body %> <%- include('../partials/footer') %>
+    <div class="p-4 bg-gray-100 text-gray-800 flex flex-col items-center justify-center">
+      <!-- Ini adalah bagian dinamis yang akan diisi oleh konten halaman -->
+      <%- body %> 
+    </div>
+    <%- include('../partials/footer') %>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
     <script>
       // Hide modals when the corresponding button is clicked
