@@ -189,7 +189,7 @@ app.get('/contact/search', async (req, res) => {
     try {
         // Jika tidak ada query, kembalikan semua kontak
         if (!query) {
-            const result = await pool.query('SELECT * FROM contacts');
+            const result = await pool.query('SELECT * FROM contacts ORDER BY updated_at DESC');
             return res.json(result.rows);
         }
 
